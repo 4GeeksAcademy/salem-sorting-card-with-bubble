@@ -6,7 +6,6 @@ import "./assets/img/4geeks.ico";
 
 window.onload = function () {
   const drawButton = document.getElementById("drawButton");
-  const sortButton = document.getElementById("sortButton");
   const cardCountInput = document.getElementById("cardCount");
   const cardIcons = ["♥", "♦", "♣", "♠"];
   const cardValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
@@ -95,14 +94,38 @@ window.onload = function () {
       alert("Draw cards first.");
       return;
     }
+
+    // Show all sort step containers
+    const sortSteps = document.querySelectorAll(".sort-step");
+    sortSteps.forEach((step) => step.classList.add("show"));
+
     const steps = bubbleSortWithSteps([...drawnCards]);
-    if (steps[0]) renderCards(steps[0], "cardContainer0");
-    if (steps[1]) renderCards(steps[1], "cardContainer1");
-    if (steps[2]) renderCards(steps[2], "cardContainer2");
-    if (steps[3]) renderCards(steps[3], "cardContainer3");
-    if (steps[4]) renderCards(steps[4], "cardContainer4");
-    if (steps[5]) renderCards(steps[5], "cardContainer5");
-    if (steps[6]) renderCards(steps[6], "cardContainer6");
-    if (steps[7]) renderCards(steps[7], "cardContainer7");
+
+    // Custom content for each step using innerHTML
+    const stepContainers = [
+      document.getElementById("cardContainer0").parentElement,
+      document.getElementById("cardContainer1").parentElement,
+      document.getElementById("cardContainer2").parentElement,
+      document.getElementById("cardContainer3").parentElement,
+      document.getElementById("cardContainer4").parentElement,
+      document.getElementById("cardContainer5").parentElement,
+      document.getElementById("cardContainer6").parentElement,
+      document.getElementById("cardContainer7").parentElement,
+    ];
+
+    //
+
+    steps.forEach((step, index) => {
+      if (index < 8 && stepContainers[index]) {
+        stepContainers[index].innerHTML = `
+             <italics>${index}</italics>
+          <div id="cardContainer${index}" class="d-flex flex-wrap justify-content-center"></div>
+        `;
+        renderCards(step, `cardContainer${index}`);
+      }
+    });
+
+    drawnCards.sort((a, b) => a.value - b.value);
+    renderCards(drawnCards, "cardContainer");
   });
 };
