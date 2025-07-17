@@ -43,26 +43,6 @@ window.onload = function () {
     renderCards(drawnCards, "cardContainer");
   }
 
-  function selectionSortWithSteps(arr) {
-    let steps = [];
-    arr = [...arr];
-    for (let i = 0; i < arr.length; i++) {
-      let minIndex = i;
-      for (let j = i + 1; j < arr.length; j++) {
-        if (arr[j].value < arr[minIndex].value) {
-          minIndex = j;
-        }
-      }
-      if (minIndex !== i) {
-        let temp = arr[i];
-        arr[i] = arr[minIndex];
-        arr[minIndex] = temp;
-        steps.push(arr.map((card) => ({ ...card })));
-      }
-    }
-    return steps;
-  }
-
   drawButton.addEventListener("click", () => {
     const count = parseInt(cardCountInput.value);
     if (isNaN(count) || count <= 0) {
@@ -74,22 +54,55 @@ window.onload = function () {
     document.getElementById("cardContainer1").innerHTML = "";
     document.getElementById("cardContainer2").innerHTML = "";
     document.getElementById("cardContainer3").innerHTML = "";
+    document.getElementById("cardContainer4").innerHTML = "";
+    document.getElementById("cardContainer5").innerHTML = "";
+    document.getElementById("cardContainer6").innerHTML = "";
+    document.getElementById("cardContainer7").innerHTML = "";
     drawCards(count);
   });
 
-  // note that the function should work if the drawncards are less than 6, otherwise it will sort correctly
-  // to solve this we can add more containers or just render the drawnCards after sorting
-  sortButton.addEventListener("click", () => {
+  // Bubble Sort Implementation with steps
+  function bubbleSortWithSteps(arr) {
+    let steps = [];
+    arr = [...arr]; // Create a copy to avoid modifying the original
+    let wall = arr.length - 1; //we start the wall at the end of the array
+
+    while (wall > 0) {
+      let index = 0;
+      let swapped = false;
+      while (index < wall) {
+        //compare the adjacent positions, if the right one is bigger, we have to swap
+        if (arr[index].value > arr[index + 1].value) {
+          let aux = arr[index];
+          arr[index] = arr[index + 1];
+          arr[index + 1] = aux;
+          swapped = true;
+        }
+        index++;
+      }
+      if (swapped) {
+        // Only add to steps if we made a swap
+        steps.push(arr.map((card) => ({ ...card })));
+      }
+      wall--; //decrease the wall for optimization
+    }
+    return steps;
+  }
+
+  const bubbleSortButton = document.getElementById("bubblesortButton");
+  bubbleSortButton.addEventListener("click", () => {
     if (drawnCards.length === 0) {
       alert("Draw cards first.");
       return;
     }
-    const steps = selectionSortWithSteps([...drawnCards]);
+    const steps = bubbleSortWithSteps([...drawnCards]);
     if (steps[0]) renderCards(steps[0], "cardContainer0");
     if (steps[1]) renderCards(steps[1], "cardContainer1");
     if (steps[2]) renderCards(steps[2], "cardContainer2");
     if (steps[3]) renderCards(steps[3], "cardContainer3");
-    drawnCards.sort((a, b) => a.value - b.value);
-    renderCards(drawnCards, "cardContainer");
+    if (steps[4]) renderCards(steps[4], "cardContainer4");
+    if (steps[5]) renderCards(steps[5], "cardContainer5");
+    if (steps[6]) renderCards(steps[6], "cardContainer6");
+    if (steps[7]) renderCards(steps[7], "cardContainer7");
   });
 };
