@@ -42,21 +42,20 @@ window.onload = function () {
     renderCards(drawnCards, "cardContainer");
   }
 
+  function clearSortSteps() {
+    const sortLogContainer = document.getElementById("sortLogContainer");
+    if (sortLogContainer) {
+      sortLogContainer.innerHTML = ""; // Clear all step content
+    }
+  }
+
   drawButton.addEventListener("click", () => {
     const count = parseInt(cardCountInput.value);
-    if (isNaN(count) || count <= 0) {
-      alert("Please enter a valid number.");
+    if (isNaN(count) || count <= 0 || count > 9) {
+      alert("Please enter a valid number. Must be between 1 and 9.");
       return;
     }
-    // Clear the sorted step containers
-    document.getElementById("cardContainer0").innerHTML = "";
-    document.getElementById("cardContainer1").innerHTML = "";
-    document.getElementById("cardContainer2").innerHTML = "";
-    document.getElementById("cardContainer3").innerHTML = "";
-    document.getElementById("cardContainer4").innerHTML = "";
-    document.getElementById("cardContainer5").innerHTML = "";
-    document.getElementById("cardContainer6").innerHTML = "";
-    document.getElementById("cardContainer7").innerHTML = "";
+    clearSortSteps();
     drawCards(count);
   });
 
@@ -95,36 +94,31 @@ window.onload = function () {
       return;
     }
 
-    // Show all sort step containers
-    const sortSteps = document.querySelectorAll(".sort-step");
-    sortSteps.forEach((step) => step.classList.add("show"));
+    const sortLogContainer = document.getElementById("sortLogContainer");
+    sortLogContainer.innerHTML = ""; // Clear previous log
 
     const steps = bubbleSortWithSteps([...drawnCards]);
 
-    // Custom content for each step using innerHTML
-    const stepContainers = [
-      document.getElementById("cardContainer0").parentElement,
-      document.getElementById("cardContainer1").parentElement,
-      document.getElementById("cardContainer2").parentElement,
-      document.getElementById("cardContainer3").parentElement,
-      document.getElementById("cardContainer4").parentElement,
-      document.getElementById("cardContainer5").parentElement,
-      document.getElementById("cardContainer6").parentElement,
-      document.getElementById("cardContainer7").parentElement,
-    ];
-
-    //
-
+    // Render each step with custom content
     steps.forEach((step, index) => {
-      if (index < 8 && stepContainers[index]) {
-        stepContainers[index].innerHTML = `
-             <italics>${index}</italics>
-          <div id="cardContainer${index}" class="d-flex flex-wrap justify-content-center"></div>
+      if (index < 8) {
+        sortLogContainer.innerHTML += `
+          <div class="d-flex flex-wrap align-items-center wow  mb-2 p-2">
+${index}
+            <div id="cardContainer${index}" class="d-flex flex-wrap justify-content-center "></div>
+          </div>
         `;
+      }
+    });
+
+    // Now render the cards in each step
+    steps.forEach((step, index) => {
+      if (index < 8) {
         renderCards(step, `cardContainer${index}`);
       }
     });
 
+    // Sort the original cards and update main container
     drawnCards.sort((a, b) => a.value - b.value);
     renderCards(drawnCards, "cardContainer");
   });
